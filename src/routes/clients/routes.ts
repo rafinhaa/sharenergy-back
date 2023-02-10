@@ -33,4 +33,20 @@ export const clientsRoutes = async (app: FastifyInstance) => {
       return rep.status(201).send({ client });
     }
   );
+
+  app.get(
+    "/",
+    {
+      schema: {
+        response: {
+          200: $ref("getClientsResponse"),
+        },
+      },
+    },
+    async (_, rep) => {
+      const clients = await database("clients").select("*");
+
+      return rep.status(200).send({ clients });
+    }
+  );
 };
