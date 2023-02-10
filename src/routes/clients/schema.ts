@@ -54,12 +54,24 @@ const deleteClientRequest = z.object({
   ...baseClientRequest,
 });
 
+const updateClientRequestParams = z.object({
+  ...baseClientRequest,
+});
+
+const updateClientRequestBody = z.object({
+  ...baseClient,
+});
+
 export type CreateClientRequest = z.input<typeof createClientRequest>;
 export type CreateClientResponse = z.output<typeof createClientResponse>;
 export type GetClientsResponse = z.output<typeof getClientsResponse>;
-export type GetClientRequest = z.output<typeof getClientRequest>;
+export type GetClientRequest = z.input<typeof getClientRequest>;
 export type GetClientResponse = z.output<typeof getClientResponse>;
-export type DeleteClientRequest = z.output<typeof deleteClientRequest>;
+export type DeleteClientRequest = z.input<typeof deleteClientRequest>;
+export type UpdateClientRequestParams = z.output<
+  typeof updateClientRequestParams
+>;
+export type UpdateClientRequestBody = z.output<typeof updateClientRequestBody>;
 
 export const { schemas: userSchemas, $ref } = buildJsonSchemas({
   createClientRequest,
@@ -68,4 +80,6 @@ export const { schemas: userSchemas, $ref } = buildJsonSchemas({
   getClientResponse,
   getClientRequest,
   deleteClientRequest,
+  updateClientRequestParams,
+  updateClientRequestBody,
 });

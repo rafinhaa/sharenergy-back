@@ -6,6 +6,8 @@ import {
   CreateClientRequest,
   DeleteClientRequest,
   GetClientRequest,
+  UpdateClientRequestBody,
+  UpdateClientRequestParams,
 } from "./schema";
 
 export const clientsRoutes = async (app: FastifyInstance) => {
@@ -93,6 +95,33 @@ export const clientsRoutes = async (app: FastifyInstance) => {
       const client = await database("clients")
         .update({
           deleted_at: database.fn.now(),
+        })
+        .where({ id })
+        .whereNull("deleted_at");
+
+      return client ? rep.status(200).send() : rep.status(404).send();
+    }
+  );
+
+  app.put<{
+    Params: UpdateClientRequestParams;
+    Body: UpdateClientRequestBody;
+  }>(
+    "/:id",
+    {
+      schema: {
+        body: $ref("updateClientRequestBody"),
+        params: $ref("updateClientRequestParams"),
+      },
+    },
+    async (req, rep) => {
+      const { id } = req.params;
+      const newPropertiesClient = req.body;
+
+      const client = await database("clients")
+        .update({
+          ...newPropertiesClient,
+          updated_at: database.fn.now(),
         })
         .where({ id })
         .whereNull("deleted_at");
