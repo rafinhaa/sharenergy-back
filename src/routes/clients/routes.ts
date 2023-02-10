@@ -1,7 +1,12 @@
 import { FastifyInstance } from "fastify";
 import { randomUUID } from "node:crypto";
 import { database } from "../../database";
-import { $ref, CreateClientRequest, GetClientRequest } from "./schema";
+import {
+  $ref,
+  CreateClientRequest,
+  DeleteClientRequest,
+  GetClientRequest,
+} from "./schema";
 
 export const clientsRoutes = async (app: FastifyInstance) => {
   app.post<{
@@ -70,6 +75,29 @@ export const clientsRoutes = async (app: FastifyInstance) => {
         .first();
 
       return client ? rep.status(200).send({ client }) : rep.status(404).send();
+    }
+  );
+
+  app.delete<{
+    Params: DeleteClientRequest;
+  }>(
+    "/:id",
+    {
+      schema: {
+        params: $ref("deleteClientRequest"),
+      },
+    },
+    async (req, rep) => {
+      const { id } = req.params;
+
+      const client = await database("clients")
+        .update({
+          deleted_at: database.fn.now(),
+        })
+        .where({ id })
+        .whereNull("deleted_at");
+
+      return client ? rep.status(200).send() : rep.status(404).send();
     }
   );
 };

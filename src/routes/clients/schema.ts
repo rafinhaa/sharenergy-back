@@ -9,6 +9,10 @@ const baseClient = {
   cpf: z.string().length(11),
 };
 
+const baseClientRequest = {
+  id: z.string().uuid(),
+};
+
 const createClientRequest = z.object({
   ...baseClient,
 });
@@ -33,7 +37,7 @@ const getClientsResponse = z.object({
 });
 
 const getClientRequest = z.object({
-  id: z.string().uuid(),
+  ...baseClientRequest,
 });
 
 const getClientResponse = z.object({
@@ -46,11 +50,16 @@ const getClientResponse = z.object({
   }),
 });
 
+const deleteClientRequest = z.object({
+  ...baseClientRequest,
+});
+
 export type CreateClientRequest = z.input<typeof createClientRequest>;
 export type CreateClientResponse = z.output<typeof createClientResponse>;
 export type GetClientsResponse = z.output<typeof getClientsResponse>;
 export type GetClientRequest = z.output<typeof getClientRequest>;
 export type GetClientResponse = z.output<typeof getClientResponse>;
+export type DeleteClientRequest = z.output<typeof deleteClientRequest>;
 
 export const { schemas: userSchemas, $ref } = buildJsonSchemas({
   createClientRequest,
@@ -58,4 +67,5 @@ export const { schemas: userSchemas, $ref } = buildJsonSchemas({
   getClientsResponse,
   getClientResponse,
   getClientRequest,
+  deleteClientRequest,
 });
