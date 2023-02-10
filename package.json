@@ -1,0 +1,16 @@
+{
+  "name": "sharenergy-back",
+  "version": "1.0.0",
+  "engines": {
+    "node": "=18"
+  },
+  "main": "./src/server.ts",
+  "license": "MIT",
+  "devDependencies": {
+    "tsx": "^3.12.3"
+  },
+  "dependencies": {
+    "@types/node": "^18.13.0",
+    "fastify": "^4.13.0"
+  }
+}
