@@ -1,7 +1,7 @@
 import { FastifyInstance } from "fastify";
 import { randomUUID } from "node:crypto";
 import { database } from "../../database";
-import { $ref, CreateClientRequest } from "./schema";
+import { $ref, CreateClientRequest, GetClientRequest } from "./schema";
 
 export const clientsRoutes = async (app: FastifyInstance) => {
   app.post<{
@@ -47,6 +47,29 @@ export const clientsRoutes = async (app: FastifyInstance) => {
       const clients = await database("clients").select("*");
 
       return rep.status(200).send({ clients });
+    }
+  );
+
+  app.get<{
+    Params: GetClientRequest;
+  }>(
+    "/:id",
+    {
+      schema: {
+        params: $ref("getClientRequest"),
+        response: {
+          200: $ref("getClientResponse"),
+        },
+      },
+    },
+    async (req, rep) => {
+      const { id } = req.params;
+      const client = await database("clients")
+        .select("*")
+        .where({ id })
+        .first();
+
+      return client ? rep.status(200).send({ client }) : rep.status(404).send();
     }
   );
 };

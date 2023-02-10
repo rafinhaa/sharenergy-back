@@ -32,12 +32,30 @@ const getClientsResponse = z.object({
   ),
 });
 
+const getClientRequest = z.object({
+  id: z.string().uuid(),
+});
+
+const getClientResponse = z.object({
+  client: z.object({
+    id: z.string().uuid(),
+    ...baseClient,
+    created_at: z.date(),
+    updated_at: z.date(),
+    deleted_at: z.date(),
+  }),
+});
+
 export type CreateClientRequest = z.input<typeof createClientRequest>;
 export type CreateClientResponse = z.output<typeof createClientResponse>;
-export type getClientResponse = z.output<typeof getClientsResponse>;
+export type GetClientsResponse = z.output<typeof getClientsResponse>;
+export type GetClientRequest = z.output<typeof getClientRequest>;
+export type GetClientResponse = z.output<typeof getClientResponse>;
 
 export const { schemas: userSchemas, $ref } = buildJsonSchemas({
   createClientRequest,
   createClientResponse,
   getClientsResponse,
+  getClientResponse,
+  getClientRequest,
 });
