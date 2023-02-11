@@ -1,6 +1,11 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { randomUUID } from "node:crypto";
-import { database } from "../../database";
+import {
+  createClient,
+  deleteClient,
+  getClient,
+  getClients,
+  updateClient,
+} from "./service";
 import {
   CreateClientRequest,
   DeleteClientRequest,
@@ -15,18 +20,8 @@ export const createClientHandler = async (
   }>,
   rep: FastifyReply
 ) => {
-  const { name, address, email, telephone, cpf } = req.body;
-  const [client] = await database("clients").insert(
-    {
-      id: randomUUID(),
-      name,
-      address,
-      email,
-      telephone,
-      cpf,
-    },
-    ["*"]
-  );
+  const newClient = req.body;
+  const [client] = await createClient(newClient);
 
   return rep.status(201).send({ client });
 };
@@ -35,7 +30,7 @@ export const getClientsHandler = async (
   _: FastifyRequest,
   rep: FastifyReply
 ) => {
-  const clients = await database("clients").select("*");
+  const clients = await getClients();
 
   return rep.status(200).send({ clients });
 };
@@ -46,8 +41,8 @@ export const getClientHandler = async (
   }>,
   rep: FastifyReply
 ) => {
-  const { id } = req.params;
-  const client = await database("clients").select("*").where({ id }).first();
+  const id = req.params;
+  const client = await getClient(id);
 
   return client ? rep.status(200).send({ client }) : rep.status(404).send();
 };
@@ -58,14 +53,9 @@ export const deleteClientHandler = async (
   }>,
   rep: FastifyReply
 ) => {
-  const { id } = req.params;
+  const id = req.params;
 
-  const client = await database("clients")
-    .update({
-      deleted_at: database.fn.now(),
-    })
-    .where({ id })
-    .whereNull("deleted_at");
+  const client = await deleteClient(id);
 
   return client ? rep.status(200).send() : rep.status(404).send();
 };
@@ -77,16 +67,10 @@ export const updateClientHandler = async (
   }>,
   rep: FastifyReply
 ) => {
-  const { id } = req.params;
+  const id = req.params;
   const newPropertiesClient = req.body;
 
-  const client = await database("clients")
-    .update({
-      ...newPropertiesClient,
-      updated_at: database.fn.now(),
-    })
-    .where({ id })
-    .whereNull("deleted_at");
+  const client = await updateClient(id, newPropertiesClient);
 
   return client ? rep.status(200).send() : rep.status(404).send();
 };
