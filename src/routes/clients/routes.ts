@@ -1,19 +1,15 @@
 import { FastifyInstance } from "fastify";
-import { randomUUID } from "node:crypto";
-import { database } from "../../database";
 import {
-  $ref,
-  CreateClientRequest,
-  DeleteClientRequest,
-  GetClientRequest,
-  UpdateClientRequestBody,
-  UpdateClientRequestParams,
-} from "./schema";
+  createClientHandler,
+  deleteClientHandler,
+  getClientHandler,
+  getClientsHandler,
+  updateClientHandler,
+} from "./controller";
+import { $ref } from "./schema";
 
 export const clientsRoutes = async (app: FastifyInstance) => {
-  app.post<{
-    Body: CreateClientRequest;
-  }>(
+  app.post(
     "/",
     {
       schema: {
@@ -23,22 +19,7 @@ export const clientsRoutes = async (app: FastifyInstance) => {
         },
       },
     },
-    async (req, rep) => {
-      const { name, address, email, telephone, cpf } = req.body;
-      const [client] = await database("clients").insert(
-        {
-          id: randomUUID(),
-          name,
-          address,
-          email,
-          telephone,
-          cpf,
-        },
-        ["*"]
-      );
-
-      return rep.status(201).send({ client });
-    }
+    createClientHandler
   );
 
   app.get(
@@ -50,16 +31,10 @@ export const clientsRoutes = async (app: FastifyInstance) => {
         },
       },
     },
-    async (_, rep) => {
-      const clients = await database("clients").select("*");
-
-      return rep.status(200).send({ clients });
-    }
+    getClientsHandler
   );
 
-  app.get<{
-    Params: GetClientRequest;
-  }>(
+  app.get(
     "/:id",
     {
       schema: {
@@ -69,44 +44,20 @@ export const clientsRoutes = async (app: FastifyInstance) => {
         },
       },
     },
-    async (req, rep) => {
-      const { id } = req.params;
-      const client = await database("clients")
-        .select("*")
-        .where({ id })
-        .first();
-
-      return client ? rep.status(200).send({ client }) : rep.status(404).send();
-    }
+    getClientHandler
   );
 
-  app.delete<{
-    Params: DeleteClientRequest;
-  }>(
+  app.delete(
     "/:id",
     {
       schema: {
         params: $ref("deleteClientRequest"),
       },
     },
-    async (req, rep) => {
-      const { id } = req.params;
-
-      const client = await database("clients")
-        .update({
-          deleted_at: database.fn.now(),
-        })
-        .where({ id })
-        .whereNull("deleted_at");
-
-      return client ? rep.status(200).send() : rep.status(404).send();
-    }
+    deleteClientHandler
   );
 
-  app.put<{
-    Params: UpdateClientRequestParams;
-    Body: UpdateClientRequestBody;
-  }>(
+  app.put(
     "/:id",
     {
       schema: {
@@ -114,19 +65,6 @@ export const clientsRoutes = async (app: FastifyInstance) => {
         params: $ref("updateClientRequestParams"),
       },
     },
-    async (req, rep) => {
-      const { id } = req.params;
-      const newPropertiesClient = req.body;
-
-      const client = await database("clients")
-        .update({
-          ...newPropertiesClient,
-          updated_at: database.fn.now(),
-        })
-        .where({ id })
-        .whereNull("deleted_at");
-
-      return client ? rep.status(200).send() : rep.status(404).send();
-    }
+    updateClientHandler
   );
 };
