@@ -7,6 +7,14 @@ import {
   UpdateClientRequestParams,
 } from "./schema";
 
+export const userAlreadyExists = async ({ cpf }: CreateClientRequest) => {
+  return await database("clients")
+    .select("*")
+    .where("cpf", cpf)
+    .whereNull("deleted_at")
+    .first();
+};
+
 export const createClient = async (client: CreateClientRequest) => {
   return await database("clients").insert(
     {

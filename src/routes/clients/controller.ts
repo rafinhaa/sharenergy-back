@@ -5,6 +5,7 @@ import {
   getClient,
   getClients,
   updateClient,
+  userAlreadyExists,
 } from "./service";
 import {
   CreateClientRequest,
@@ -21,6 +22,10 @@ export const createClientHandler = async (
   rep: FastifyReply
 ) => {
   const newClient = req.body;
+  const userExists = await userAlreadyExists(newClient);
+
+  if (userExists) return rep.status(409).send();
+
   const [client] = await createClient(newClient);
 
   return rep.status(201).send({ client });
