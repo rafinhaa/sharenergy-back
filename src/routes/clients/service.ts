@@ -21,21 +21,21 @@ export const getClients = async () => {
   return await database("clients").select("*");
 };
 
-export const getClient = async (id: GetClientRequest) => {
-  return await database("clients").select("*").where({ id }).first();
+export const getClient = async ({ id }: GetClientRequest) => {
+  return await database("clients").select("*").where("id", id).first();
 };
 
-export const deleteClient = async (id: GetClientRequest) => {
+export const deleteClient = async ({ id }: GetClientRequest) => {
   return await database("clients")
     .update({
       deleted_at: database.fn.now(),
     })
-    .where({ id })
+    .where("id", id)
     .whereNull("deleted_at");
 };
 
 export const updateClient = async (
-  id: UpdateClientRequestParams,
+  { id }: UpdateClientRequestParams,
   client: UpdateClientRequestBody
 ) => {
   return await database("clients")
@@ -43,6 +43,6 @@ export const updateClient = async (
       ...client,
       updated_at: database.fn.now(),
     })
-    .where({ id })
+    .where("id", id)
     .whereNull("deleted_at");
 };
