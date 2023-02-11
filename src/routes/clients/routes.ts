@@ -26,6 +26,7 @@ export const clientsRoutes = async (app: FastifyInstance) => {
     "/",
     {
       schema: {
+        querystring: $ref("getClientsRequest"),
         response: {
           200: $ref("getClientsResponse"),
         },

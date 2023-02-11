@@ -1,8 +1,9 @@
-import { randomUUID } from "crypto";
+import { randomUUID } from "node:crypto";
 import { database } from "../../database";
 import {
   CreateClientRequest,
   GetClientRequest,
+  GetClientsRequest,
   UpdateClientRequestBody,
   UpdateClientRequestParams,
 } from "./schema";
@@ -25,8 +26,27 @@ export const createClient = async (client: CreateClientRequest) => {
   );
 };
 
-export const getClients = async () => {
-  return await database("clients").select("*");
+export const getClients = async ({ limit, page }: GetClientsRequest) => {
+  const [totalRows] = await database("clients").count({ count: "*" });
+  const hasLimit = limit > 0;
+
+  const offset = (page - 1) * limit;
+  const totalPages =
+    totalRows.count && hasLimit
+      ? Math.ceil(Number(totalRows.count.toString()) / limit)
+      : 0;
+
+  const allClients = hasLimit
+    ? await database("clients").select("*").limit(limit).offset(offset)
+    : await database("clients").select("*");
+
+  return {
+    totalRows: totalRows.count,
+    page,
+    totalPages,
+    limit,
+    clients: allClients,
+  };
 };
 
 export const getClient = async ({ id }: GetClientRequest) => {

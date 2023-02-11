@@ -24,7 +24,16 @@ const createClientResponse = z.object({
   }),
 });
 
+const getClientsRequest = z.object({
+  page: z.number().int().min(1).default(1),
+  limit: z.number().int().min(0).default(0),
+});
+
 const getClientsResponse = z.object({
+  page: z.number().int(),
+  limit: z.number().int(),
+  totalRows: z.number().int(),
+  totalPages: z.number().int(),
   clients: z.array(
     z.object({
       id: z.string().uuid(),
@@ -64,6 +73,7 @@ const updateClientRequestBody = z.object({
 
 export type CreateClientRequest = z.input<typeof createClientRequest>;
 export type CreateClientResponse = z.output<typeof createClientResponse>;
+export type GetClientsRequest = z.output<typeof getClientsRequest>;
 export type GetClientsResponse = z.output<typeof getClientsResponse>;
 export type GetClientRequest = z.input<typeof getClientRequest>;
 export type GetClientResponse = z.output<typeof getClientResponse>;
@@ -76,6 +86,7 @@ export type UpdateClientRequestBody = z.output<typeof updateClientRequestBody>;
 export const { schemas: userSchemas, $ref } = buildJsonSchemas({
   createClientRequest,
   createClientResponse,
+  getClientsRequest,
   getClientsResponse,
   getClientResponse,
   getClientRequest,

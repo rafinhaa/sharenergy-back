@@ -11,6 +11,7 @@ import {
   CreateClientRequest,
   DeleteClientRequest,
   GetClientRequest,
+  GetClientsRequest,
   UpdateClientRequestBody,
   UpdateClientRequestParams,
 } from "./schema";
@@ -32,12 +33,15 @@ export const createClientHandler = async (
 };
 
 export const getClientsHandler = async (
-  _: FastifyRequest,
+  req: FastifyRequest<{
+    Querystring: GetClientsRequest;
+  }>,
   rep: FastifyReply
 ) => {
-  const clients = await getClients();
+  const queryParams = req.query;
+  const clients = await getClients(queryParams);
 
-  return rep.status(200).send({ clients });
+  return rep.status(200).send(clients);
 };
 
 export const getClientHandler = async (
