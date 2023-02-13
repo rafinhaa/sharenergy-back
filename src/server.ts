@@ -1,5 +1,10 @@
 import fastify from "fastify";
-import { clientsRoutes, dogsRoutes, httpCatRoutes } from "./routes";
+import {
+  clientsRoutes,
+  dogsRoutes,
+  httpCatRoutes,
+  usersRoutes,
+} from "./routes";
 import { userSchemas } from "./routes/clients/schema";
 
 const app = fastify();
@@ -18,6 +23,10 @@ app.register(dogsRoutes, {
 
 app.register(httpCatRoutes, {
   prefix: "catcode",
+});
+
+app.register(usersRoutes, {
+  prefix: "users",
 });
 
 app
