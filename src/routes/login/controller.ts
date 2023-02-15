@@ -11,7 +11,7 @@ export const loginUserHandler = async (
 ) => {
   const { password, username } = req.body;
 
-  const user = await database("users").where("email", username).first();
+  const user = await database("users").where("username", username).first();
 
   if (!user) return rep.code(401).send();
 
