@@ -4,12 +4,14 @@ import {
   dogsRoutes,
   httpCatRoutes,
   usersRoutes,
+  loginRoutes,
 } from "./routes";
 import { userSchemas } from "./routes/clients/schema";
+import { loginSchemas } from "./routes/login/schema";
 
 const app = fastify();
 
-for (const schema of [...userSchemas]) {
+for (const schema of [...userSchemas, ...loginSchemas]) {
   app.addSchema(schema);
 }
 
@@ -27,6 +29,10 @@ app.register(httpCatRoutes, {
 
 app.register(usersRoutes, {
   prefix: "users",
+});
+
+app.register(loginRoutes, {
+  prefix: "login",
 });
 
 app
