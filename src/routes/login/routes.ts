@@ -1,5 +1,5 @@
 import { FastifyInstance } from "fastify";
-import { loginUserHandler } from "./controller";
+import { createUserHandler, loginUserHandler } from "./controller";
 import { $ref } from "./schema";
 
 export const loginRoutes = async (app: FastifyInstance) => {
@@ -12,4 +12,6 @@ export const loginRoutes = async (app: FastifyInstance) => {
     },
     loginUserHandler
   );
+
+  app.post("/create", createUserHandler);
 };
