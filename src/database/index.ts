@@ -10,6 +10,10 @@ export const config: Knex.Config = {
     extension: "ts",
     directory: "./database/migrations",
   },
+  seeds: {
+    extension: "ts",
+    directory: "./database/seeds",
+  },
 };
 
 export const database = knex(config);
