@@ -2,7 +2,7 @@ import { FastifyInstance } from "fastify";
 import { createUserHandler, loginUserHandler } from "./controller";
 import { $ref } from "./schema";
 
-export const loginRoutes = async (app: FastifyInstance) => {
+const loginRoutes = async (app: FastifyInstance) => {
   app.post(
     "/",
     {
@@ -15,3 +15,5 @@ export const loginRoutes = async (app: FastifyInstance) => {
 
   app.post("/create", createUserHandler);
 };
+
+export default loginRoutes;

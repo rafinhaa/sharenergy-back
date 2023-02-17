@@ -8,7 +8,7 @@ import {
 } from "./controller";
 import { $ref } from "./schema";
 
-export const clientsRoutes = async (app: FastifyInstance) => {
+const clientsRoutes = async (app: FastifyInstance) => {
   app.post(
     "/",
     {
@@ -69,3 +69,5 @@ export const clientsRoutes = async (app: FastifyInstance) => {
     updateClientHandler
   );
 };
+
+export default clientsRoutes;
