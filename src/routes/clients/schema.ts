@@ -83,14 +83,19 @@ export type UpdateClientRequestParams = z.output<
 >;
 export type UpdateClientRequestBody = z.output<typeof updateClientRequestBody>;
 
-export const { schemas: userSchemas, $ref } = buildJsonSchemas({
-  createClientRequest,
-  createClientResponse,
-  getClientsRequest,
-  getClientsResponse,
-  getClientResponse,
-  getClientRequest,
-  deleteClientRequest,
-  updateClientRequestParams,
-  updateClientRequestBody,
-});
+export const { schemas, $ref } = buildJsonSchemas(
+  {
+    createClientRequest,
+    createClientResponse,
+    getClientsRequest,
+    getClientsResponse,
+    getClientResponse,
+    getClientRequest,
+    deleteClientRequest,
+    updateClientRequestParams,
+    updateClientRequestBody,
+  },
+  {
+    $id: "clientSchemas",
+  }
+);

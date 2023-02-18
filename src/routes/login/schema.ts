@@ -8,7 +8,7 @@ const loginUserRequest = z.object({
 
 export type LoginUserRequest = z.input<typeof loginUserRequest>;
 
-export const { schemas: loginSchemas, $ref } = buildJsonSchemas(
+export const { schemas, $ref } = buildJsonSchemas(
   {
     loginUserRequest,
   },

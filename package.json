@@ -18,6 +18,7 @@
     "@fastify/http-proxy": "^8.4.0",
     "@types/node": "^18.13.0",
     "argon2": "^0.30.3",
+    "fast-glob": "^3.2.12",
     "fastify": "^4.13.0",
     "fastify-zod": "^1.2.0",
     "knex": "^2.4.2",
