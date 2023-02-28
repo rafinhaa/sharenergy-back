@@ -1,4 +1,5 @@
 import { FastifyInstance } from "fastify";
+import checkAuthCookie from "../../middleware/check-auth-cookie";
 import {
   createClientHandler,
   deleteClientHandler,
@@ -9,6 +10,8 @@ import {
 import { $ref } from "./schema";
 
 const clientsRoutes = async (app: FastifyInstance) => {
+  app.register(checkAuthCookie);
+
   app.post(
     "/",
     {

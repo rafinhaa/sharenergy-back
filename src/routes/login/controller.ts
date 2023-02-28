@@ -22,6 +22,13 @@ export const loginUserHandler = async (
 
   if (!correctly) return rep.code(401).send();
 
+  rep.setCookie("token", rep.signCookie("user-token"), {
+    maxAge: 1000 * 60 * 60 * 24 * 7,
+    path: "/",
+    signed: true,
+    httpOnly: true,
+  });
+
   return rep.code(200).send({ correctly });
 };
 
