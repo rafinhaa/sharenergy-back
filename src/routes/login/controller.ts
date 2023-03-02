@@ -29,7 +29,7 @@ export const loginUserHandler = async (
     httpOnly: true,
   });
 
-  return rep.code(200).send({ correctly });
+  return rep.code(200).send({ user });
 };
 
 export const createUserHandler = async (

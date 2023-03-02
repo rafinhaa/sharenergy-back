@@ -8,6 +8,9 @@ const loginRoutes = async (app: FastifyInstance) => {
     {
       schema: {
         body: $ref("loginUserRequest"),
+        response: {
+          200: $ref("loginUserResponse"),
+        },
       },
     },
     loginUserHandler
