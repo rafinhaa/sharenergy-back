@@ -1,13 +1,5 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import {
-  createClient,
-  deleteClient,
-  getClient,
-  getClients,
-  updateClient,
-  userAlreadyExists,
-} from "./service";
-import {
   CreateClientRequest,
   DeleteClientRequest,
   GetClientRequest,
@@ -23,11 +15,11 @@ export const createClientHandler = async (
   rep: FastifyReply
 ) => {
   const newClient = req.body;
-  const userExists = await userAlreadyExists(newClient);
+  const userExists = await req.server.clientRepository.findByCpf(newClient);
 
   if (userExists) return rep.status(409).send();
 
-  const [client] = await createClient(newClient);
+  const [client] = await req.server.clientRepository.create(newClient);
 
   return rep.status(201).send({ client });
 };
@@ -39,7 +31,7 @@ export const getClientsHandler = async (
   rep: FastifyReply
 ) => {
   const queryParams = req.query;
-  const clients = await getClients(queryParams);
+  const clients = await req.server.clientRepository.getAll(queryParams);
 
   return rep.status(200).send(clients);
 };
@@ -51,7 +43,7 @@ export const getClientHandler = async (
   rep: FastifyReply
 ) => {
   const id = req.params;
-  const client = await getClient(id);
+  const client = await rep.server.clientRepository.findById(id);
 
   return client ? rep.status(200).send({ client }) : rep.status(404).send();
 };
@@ -64,7 +56,7 @@ export const deleteClientHandler = async (
 ) => {
   const id = req.params;
 
-  const client = await deleteClient(id);
+  const client = await req.server.clientRepository.delete(id);
 
   return client ? rep.status(200).send() : rep.status(404).send();
 };
@@ -79,7 +71,10 @@ export const updateClientHandler = async (
   const id = req.params;
   const newPropertiesClient = req.body;
 
-  const client = await updateClient(id, newPropertiesClient);
+  const client = await req.server.clientRepository.update(
+    id,
+    newPropertiesClient
+  );
 
   return client ? rep.status(200).send() : rep.status(404).send();
 };
