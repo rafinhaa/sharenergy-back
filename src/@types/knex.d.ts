@@ -9,17 +9,21 @@ declare module "knex/types/tables" {
     address: string;
     cpf: string;
     created_at: string;
-    updated_at: string;
-    deleted_at: string;
+    updated_at: string | null;
+    deleted_at: string | null;
+  }
+
+  export interface User {
+    id: string;
+    username: string;
+    password: string;
+    created_at: string;
+    updated_at: string | null;
+    deleted_at: string | null;
   }
 
   export interface Tables {
     clients: Clients;
-    users_composite: Knex.CompositeTableType<
-      Clients,
-      Pick<Clients, "name"> &
-        Partial<Pick<Clients, "created_at" | "updated_at">>,
-      Partial<Omit<Clients, "id">>
-    >;
+    users: User;
   }
 }
