@@ -12,13 +12,7 @@ import {
 export class KnexClientRepository implements ClientRepository {
   constructor(private readonly knex: Knex) {}
 
-  async getAll({ limit, page }: GetClientsRequest): Promise<{
-    totalRows: string | number | undefined;
-    page: number;
-    totalPages: number;
-    limit: number;
-    clients: any[];
-  }> {
+  async getAll({ limit, page }: GetClientsRequest) {
     const [totalRows] = await this.knex("clients").count({ count: "*" });
     const hasLimit = limit > 0;
 
@@ -41,7 +35,7 @@ export class KnexClientRepository implements ClientRepository {
     };
   }
 
-  async create(client: CreateClientRequest): Promise<any> {
+  async create(client: CreateClientRequest) {
     return await this.knex("clients").insert(
       {
         id: randomUUID(),
@@ -51,7 +45,7 @@ export class KnexClientRepository implements ClientRepository {
     );
   }
 
-  async findById({ id }: GetClientRequest): Promise<any | null> {
+  async findById({ id }: GetClientRequest) {
     const client = await this.knex("clients")
       .select("*")
       .where("id", id)
@@ -59,7 +53,7 @@ export class KnexClientRepository implements ClientRepository {
     return client || null;
   }
 
-  async findByCpf({ cpf }: CreateClientRequest): Promise<any | null> {
+  async findByCpf({ cpf }: CreateClientRequest) {
     const user = await this.knex("clients")
       .select("*")
       .where({ cpf })
@@ -72,7 +66,7 @@ export class KnexClientRepository implements ClientRepository {
   async update(
     { id }: UpdateClientRequestParams,
     client: UpdateClientRequestBody
-  ): Promise<any> {
+  ) {
     return this.knex("clients")
       .update({
         ...client,
@@ -82,7 +76,7 @@ export class KnexClientRepository implements ClientRepository {
       .whereNull("deleted_at");
   }
 
-  async delete({ id }: GetClientRequest): Promise<any> {
+  async delete({ id }: GetClientRequest) {
     return await this.knex("clients")
       .update({
         deleted_at: this.knex.fn.now(),

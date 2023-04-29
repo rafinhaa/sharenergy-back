@@ -1,3 +1,4 @@
+import { Clients } from "knex/types/tables";
 import {
   CreateClientRequest,
   GetClientRequest,
@@ -12,14 +13,14 @@ export interface ClientRepository {
     page: number;
     totalPages: number;
     limit: number;
-    clients: any[];
+    clients: Clients[];
   }>;
-  create(user: CreateClientRequest): Promise<any>;
-  findById({ id }: GetClientRequest): Promise<any | null>;
-  findByCpf({ cpf }: CreateClientRequest): Promise<any | null>;
+  create(user: CreateClientRequest): Promise<Clients[]>;
+  findById({ id }: GetClientRequest): Promise<Clients | null>;
+  findByCpf({ cpf }: CreateClientRequest): Promise<Clients | null>;
   update(
     { id }: UpdateClientRequestParams,
     client: UpdateClientRequestBody
-  ): Promise<any>;
-  delete({ id }: GetClientRequest): Promise<any>;
+  ): Promise<number>;
+  delete({ id }: GetClientRequest): Promise<number>;
 }
