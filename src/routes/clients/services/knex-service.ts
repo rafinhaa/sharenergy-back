@@ -13,7 +13,9 @@ export class KnexClientRepository implements ClientRepository {
   constructor(private readonly knex: Knex) {}
 
   async getAll({ limit, page }: GetClientsRequest) {
-    const [totalRows] = await this.knex("clients").count({ count: "*" });
+    const [totalRows] = await this.knex("clients")
+      .count({ count: "*" })
+      .whereNull("deleted_at");
     const hasLimit = limit > 0;
 
     const offset = (page - 1) * limit;
@@ -23,8 +25,12 @@ export class KnexClientRepository implements ClientRepository {
         : 0;
 
     const allClients = hasLimit
-      ? await this.knex("clients").select("*").limit(limit).offset(offset)
-      : await this.knex("clients").select("*");
+      ? await this.knex("clients")
+          .select("*")
+          .whereNull("deleted_at")
+          .limit(limit)
+          .offset(offset)
+      : await this.knex("clients").select("*").whereNull("deleted_at");
 
     return {
       totalRows: totalRows.count,
