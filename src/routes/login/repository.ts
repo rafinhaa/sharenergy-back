@@ -7,3 +7,14 @@ export interface LoginRepository {
     username,
   }: Omit<LoginUserRequest, "password">): Promise<User | undefined>;
 }
+
+export interface PasswordCryptRepository {
+  verify({
+    hash,
+    password,
+  }: {
+    hash: string;
+    password: string;
+  }): Promise<boolean>;
+  hash({ password }: Omit<LoginUserRequest, "username">): Promise<string>;
+}

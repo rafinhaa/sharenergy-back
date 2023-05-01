@@ -1,5 +1,5 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import argon2 from "argon2";
+
 import { LoginUserRequest } from "./schema";
 import { randomBytes } from "node:crypto";
 
@@ -15,7 +15,10 @@ export const loginUserHandler = async (
 
   if (!user) return rep.code(401).send();
 
-  const correctly = await argon2.verify(user.password, password);
+  const correctly = await req.server.passwordRepository.verify({
+    hash: user.password,
+    password,
+  });
 
   if (!correctly) return rep.code(401).send();
 
@@ -43,11 +46,7 @@ export const createUserHandler = async (
 
   if (userAlreadyExists) return rep.code(409).send();
 
-  const salt = randomBytes(16);
-
-  const hash = await argon2.hash(password, {
-    salt,
-  });
+  const hash = await req.server.passwordRepository.hash({ password });
 
   const newUser = await req.server.loginRepository.createUser({
     username,
